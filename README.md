@@ -157,3 +157,72 @@ $ vim package.json
 |Artifact cleaning2|bsb -clean|bsb -clean||
 
 [Docs/Language Manual/Overview/Build System Overview/Build Project](https://rescript-lang.org/docs/manual/v9.0.0/build-overview#build-project)
+
+## 5.
+
+```
+$ find ./src -name "*.js" | sort
+./src/App.js
+./src/App.test.js
+./src/index.js
+./src/reportWebVitals.js
+./src/setupTests.js
+```
+
+## 6.
+
+```
+$ git mv src/index.js src/Index.res
+$ git mv src/App.js src/App.res
+```
+
+```
+$ vim src/Index.res
+```
+
+```
+%%raw(`
+import React from 'react';
+...
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+`)
+```
+
+```
+$ vim src/App.res
+```
+
+```
+%%raw(`
+import logo from './logo.svg';
+...
+export default App;
+`)
+```
+
+```
+$ npm start:res
+```
+
+```
+$ npm start
+```
+
+error happen on localhost:3000
+
+```
+$ echo 'import "./Index.bs" > src/index.js'
+```
+
+error happen on localhost:3000
+
+```
+$ vim Index.res
+```
+
+```
+...
+import App from './App.bs';
+...
+```
