@@ -2,9 +2,9 @@
 version: ## version
 	./node_modules/.bin/bsb --version
 
-.PHONY: build
-build: ## build rescript 
-	./node_modules/.bin/bsb -make-world
+.PHONY: build-watch
+build-watch: ## build rescript with watch mode
+	./node_modules/.bin/bsb -make-world -w
 
 .PHONY: up
 up: ## start app
