@@ -1,13 +1,13 @@
-%%raw(`
-import logo from './logo.svg';
-import './App.css';
-`)
+%%raw(`import './App.css';`)
+
+// import logo from './logo.svg';
+@module("./logo.svg") external logo: string = "default"
 
 @react.component
 let make = () => {
   <div className="App">
     <header className="App-header">
-      <img src={%raw("logo")} className="App-logo" alt="logo" />
+      <img src={logo} className="App-logo" alt="logo" />
       <p>
         {React.string(" Edit")}
         <code> {React.string("src/App.js")} </code>

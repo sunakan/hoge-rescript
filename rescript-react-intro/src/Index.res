@@ -2,18 +2,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App.bs';
-import reportWebVitals from './reportWebVitals';
-
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+import {make as App} from './App.bs';
 `)
+
+// @module("./reportWebVitals") external ....
+// #=> import reportWebVitals from ./reportWebVitals";
+//
+// @module("./yyy") external hogehoge: zzz
+// #=> var hogehoge = yyy;
+//
+@module("./reportWebVitals") external reportWebVitals: 'whatever = "default"
+
+// ReScript
+let rootQuery = ReactDom.querySelector("#root")
+switch rootQuery {
+| None => ()
+| Some(root) => ReactDOM.render(<App />, root)
+}
+// Same js
+//const root = document.getElementById('root');
+//if (root)
+//ReactDOM.render(
+//  <React.StrictMode>
+//    <App />
+//  </React.StrictMode>,
+//  root
+//)
+
+reportWebVitals()
