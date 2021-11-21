@@ -1,70 +1,228 @@
-# Getting Started with Create React App
+# ReScript-shakyo1
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+[Setting Up A Rescript Create-React-App From Scratch](https://dusty.phillips.codes/2021/01/28/setting-up-a-rescript-create-react-app-from-scratch/)
 
-## Available Scripts
+2021-01-28
 
-In the project directory, you can run:
+## 1.
 
-### `npm start`
+```
+$ echo '{"private":true}' | jq '.' > package.json
+$ npm install bs-platform
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 2.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Don't use ReasonReact
+- Use rescript-react
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Vanilla react app
 
-### `npm run build`
+```
+$ npx create-react-app rescript-react-intro
+$ cd rescript-react-intro
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+$ npm install --save-dev bs-platform gentype
+$ npm install --save @rescript/react
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+$ tree -a -I "\.DS_Store|\.git|node_modules" -N
+.
+├── .gitignore
+├── README.md
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+└── src
+    ├── App.css
+    ├── App.js
+    ├── App.test.js
+    ├── index.css
+    ├── index.js
+    ├── logo.svg
+    ├── reportWebVitals.js
+    └── setupTests.js
+2 directories, 18 files
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## 3.
 
-### `npm run eject`
+new file `bsconfig.json`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+$ vim bsconfig.json
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+{
+  "$schema": "https://raw.githubusercontent.com/rescript-lang/rescript-compiler/master/docs/docson/build-schema.json",
+  "name": "rescript-react-intro",
+  "reason": {
+    "react-jsx": 3
+  },
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "bsc-flags": ["-bs-super-errors"],
+  "refmt": 3,
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+  "package-specs": [
+    {
+      "module": "es6",
+      "in-source": true
+    }
+  ],
+  "suffix": ".bs.js",
+  "namespace": true,
+  "gentypeconfig": {
+    "language": "typescript"
+  },
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  "bs-dependencies": ["@rescript/react"]
+}
+```
 
-## Learn More
+↑↑↑↑↑↑↑↑ [Rescript build configuration](https://rescript-lang.org/docs/manual/latest/build-configuration-schema)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+...
+  "reason": {
+    "react-jsx": 3
+  }
+...
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+reason react-jsx version is 3.
 
-### Code Splitting
+[ReasonReact](https://reasonml.github.io/reason-react/docs/en/jsx)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-### Analyzing the Bundle Size
+```
+...
+  "refmt": 3,
+...
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+rescript formatter version is 3.
 
-### Making a Progressive Web App
+```
+  "suffix": ".bs.js"
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+[docs > Configuration > suffix](https://rescript-lang.org/docs/manual/latest/build-configuration#suffix)
 
-### Advanced Configuration
+`.js` or `.mjs` or `.cjs` or `.bs.js`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+If you want to use genType, use `.bs.js` .
 
-### Deployment
+[Why is it recommended to use *.bs.js suffix?](https://forum.rescript-lang.org/t/why-is-it-recommended-to-use-bs-js-suffix/380)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+## 4.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```
+$ vim package.json
+```
+
+```
+...
+  "scripts": {
+    ...
+    "start:res": "bsb -make-world -w", # <- add
+    ...
+  },
+...
+```
+
+`bsb -make-world -w`
+
+|     |v6.0-8.2|v8.2-v9.0|v9.1|
+|:----|:-------|:--------|:---|
+|Lang manual link|[link](https://rescript-lang.org/docs/manual/v8.0.0/build-overview)|[link](https://rescript-lang.org/docs/manual/v9.0.0/build-overview)|[link](https://rescript-lang.org/docs/manual/latest/build-overview)|
+|Build tool|bsb|bsb|rescript|
+|Config|bsconfig.json|bsconfig.json|bsconfig.json|
+|To build project|bsb -make-world|bsb -make-world|rescript build|
+|Artifacts cleaning|bsb -clean-world|bsb -clean-world|rescript clean|
+|Artifact cleaning2|bsb -clean|bsb -clean||
+
+[Docs/Language Manual/Overview/Build System Overview/Build Project](https://rescript-lang.org/docs/manual/v9.0.0/build-overview#build-project)
+
+## 5.
+
+```
+$ find ./src -name "*.js" | sort
+./src/App.js
+./src/App.test.js
+./src/index.js
+./src/reportWebVitals.js
+./src/setupTests.js
+```
+
+## 6.
+
+```
+$ git mv src/index.js src/Index.res
+$ git mv src/App.js src/App.res
+```
+
+```
+$ vim src/Index.res
+```
+
+```
+%%raw(`
+import React from 'react';
+...
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals();
+`)
+```
+
+```
+$ vim src/App.res
+```
+
+```
+%%raw(`
+import logo from './logo.svg';
+...
+export default App;
+`)
+```
+
+```
+$ npm start:res
+```
+
+```
+$ npm start
+```
+
+error happen on localhost:3000
+
+```
+$ echo 'import "./Index.bs" > src/index.js'
+```
+
+error happen on localhost:3000
+
+```
+$ vim Index.res
+```
+
+```
+...
+import App from './App.bs';
+...
+```
